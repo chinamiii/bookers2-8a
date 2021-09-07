@@ -4,32 +4,30 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @newbook = Book.new
     @books =@user.books
-    
-    #ログインしてるユーザーをエントリーテーブルに記録
-    @currentUserEntry=Entry.where(user_id: current_user.id)
-    #相手のユーザーをエントリーテーブルに記録
-    @userEntry=Entry.where(user_id: @user.id)
-    
-    if @user.id == current_user.id
+
+    @currentUserEntry=Entry.where(user_id: current_user.id) #1ログインしてるユーザーをエントリーテーブルに記録
+    @userEntry=Entry.where(user_id: @user.id) #2相手のユーザーをエントリーテーブルに記録
+
+    if @user.id == current_user.id #いまログインしてる？
     else
-      @currentUserEntry.each do |cu|
-        @userEntry.each do |u|
+      @currentUserEntry.each do |cu| #1ログインしてるユーザー
+        @userEntry.each do |u| #2相手のユーザー
           if cu.room_id == u.room_id then
             @isRoom = true
-            #room_idが共通しているのユーザー同士に対して
-            @roomId = cu.room_id
+            @roomId = cu.room_id #room_idが共通しているのユーザー同士に対して
+            #これですでに作成されているroom_idを特定できる
           end
         end
       end
-      if @isRoom
+      if @isRoom　#新しくインスタンスを生成
       else
         @room = Room.new
         @entry = Entry.new
       end
     end
   end
-  
-  
+
+
 
   def index
     @users = User.all
